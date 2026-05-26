@@ -1,0 +1,247 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "灏忕▼搴忓紑绁ㄦ櫤鑳戒綋 - 缁熶竴鍚庣API",
+    "description": "闆嗚〃鍗曢獙璇併€佹覆鏌撱€佸巻鍙叉煡璇€佹彁浜や簬涓€浣撶殑鍚庣鏈嶅姟銆傞儴缃插悗鐩存帴瀵煎叆 AgentArts 鍒涘缓鎻掍欢鍗冲彲浣跨敤銆傛墍鏈夋帴鍙ｉ渶鍦?Header 涓惡甯?X-API-Key銆?,
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "缁熶竴鍚庣鏈嶅姟鍦板潃锛堥儴缃插悗鏇挎崲涓哄疄闄呭湴鍧€锛?
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API Key 閴存潈銆傞粯璁ゅ€? ak-8Y5x8evzs6YO5CjvQSaMWHqhTL3vX9k2UYb2hQ85hA"
+      }
+    }
+  },
+  "paths": {
+    "/validate": {
+      "post": {
+        "operationId": "validate_invoice_form",
+        "summary": "楠岃瘉寮€绁ㄨ〃鍗?,
+        "description": "楠岃瘉寮€绁ㄨ〃鍗曚腑4涓繀濉瓧娈碉紙椤圭洰鍚嶇О銆佸紑绁ㄩ噾棰濄€佸彂绁ㄧ被鍨嬨€佽柂璧勪唬鍙戯級鏄惁瀹屾暣銆傛帴鏀禞SON鏍煎紡鐨勮〃鍗曟暟鎹紝杩斿洖楠岃瘉缁撴灉銆佺己澶卞瓧娈靛垪琛ㄥ拰濉啓杩涘害銆?,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["form_data"],
+                "properties": {
+                  "form_data": {
+                    "type": "string",
+                    "description": "JSON瀛楃涓诧紝鍖呭惈寮€绁ㄨ〃鍗曞瓧娈点€傜ず渚? {\"projectName\":\"鍏夋槑绉戝鍩嶾",\"amount\":\"50000\",\"invoiceType\":\"鐢靛瓙涓撶エ\",\"proxyType\":\"1\"}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "楠岃瘉缁撴灉",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {"type": "boolean", "description": "鏄惁婊¤冻鎵€鏈夊繀濉?},
+                    "missing_required": {"type": "array", "items": {"type": "string"}},
+                    "missing_required_labels": {"type": "array", "items": {"type": "string"}, "description": "缂哄け蹇呭～瀛楁涓枃鍚嶇О"},
+                    "filled_required_count": {"type": "integer"},
+                    "total_required_count": {"type": "integer"},
+                    "filled_optional_count": {"type": "integer"},
+                    "total_optional_count": {"type": "integer"},
+                    "can_submit": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/render": {
+      "post": {
+        "operationId": "render_invoice_form",
+        "summary": "娓叉煋寮€绁ㄨ〃鍗曢瑙?,
+        "description": "娓叉煋寮€绁ㄧ敵璇疯〃鍗昐VG棰勮鍥惧拰HTML纭鎻愪氦鎸夐挳銆傝〃鍗曟寜绫诲埆鍒嗙粍灞曠ず锛堝熀纭€淇℃伅/宸ョ▼淇℃伅/寮€绁ㄨˉ鍏?鍑瘉闄勪欢锛夛紝鍖呭惈濉啓杩涘害缁熻銆?,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["form_data"],
+                "properties": {
+                  "form_data": {
+                    "type": "string",
+                    "description": "JSON瀛楃涓诧紝鍖呭惈寮€绁ㄥ瓧娈?
+                  },
+                  "is_supplementing": {
+                    "type": "string",
+                    "default": "false",
+                    "description": "鏄惁琛ュ厖淇℃伅涓紝true=鎸夐挳缃伆锛宖alse=姝ｅ父"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "娓叉煋缁撴灉",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "image_url": {"type": "string", "description": "SVG琛ㄥ崟棰勮鍥綰RL"},
+                    "button_url": {"type": "string", "description": "HTML鎻愪氦鎸夐挳URL"},
+                    "unfilled_optional_labels": {
+                      "type": "array",
+                      "items": {"type": "string"},
+                      "description": "鏈～鍐欑殑鍙€夊瓧娈?
+                    },
+                    "message": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/query_history": {
+      "post": {
+        "operationId": "query_invoice_history",
+        "summary": "鏌ヨ鍘嗗彶寮€绁ㄨ褰?,
+        "description": "鏌ヨ鍘嗗彶寮€绁ㄨ褰曘€傛敮鎸佹寜椤圭洰鍚嶇О鍜屾椂闂磋寖鍥寸瓫閫夈€傜敤浜庛€屽弬鑰冧笂涓湀寮€绁ㄣ€嶇瓑鍦烘櫙銆俶ock妯″紡杩斿洖绀轰緥鏁版嵁锛宺eal妯″紡瀵规帴鐪熷疄鍚庣銆?,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project_name": {
+                    "type": "string",
+                    "description": "椤圭洰鍚嶇О锛堝彲閫夛紝涓虹┖鏌ュ叏閮級"
+                  },
+                  "time_range": {
+                    "type": "string",
+                    "description": "鏃堕棿鑼冨洿: last_month/last/last_3_months/this_year/last_year/YYYY-MM",
+                    "default": ""
+                  },
+                  "status": {
+                    "type": "string",
+                    "default": "2",
+                    "description": "寮€绁ㄧ姸鎬? 2=璐㈠姟瀹℃壒閫氳繃"
+                  },
+                  "page_num": {
+                    "type": "integer",
+                    "default": 1
+                  },
+                  "page_size": {
+                    "type": "integer",
+                    "default": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "鏌ヨ缁撴灉",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "project_name": {"type": "string"},
+                    "time_range": {"type": "string"},
+                    "total": {"type": "integer"},
+                    "records": {"type": "array", "description": "鏍煎紡鍖栬褰曪紙涓枃灞曠ず锛?},
+                    "raw_records": {"type": "array", "description": "鍘熷璁板綍锛堝惈鑻辨枃瀛楁鍚嶏級"},
+                    "message": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/submit_application": {
+      "post": {
+        "operationId": "submit_invoice_application",
+        "summary": "鎻愪氦寮€绁ㄧ敵璇?,
+        "description": "鎻愪氦寮€绁ㄧ敵璇凤紙鏂板/缂栬緫锛夈€傛敮鎸乵ock妯″紡鍜岀湡瀹濧PI妯″紡銆傚寘鍚?涓繀濉瓧娈靛拰16涓彲閫夊瓧娈点€傚巻鍙插紑绁ㄥ弬鑰冩彁浜ゆ椂闇€淇濈暀projectId銆乼axPersonnel銆乻alary绛夌郴缁熷瓧娈点€?,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["form_data"],
+                "properties": {
+                  "form_data": {
+                    "type": "string",
+                    "description": "JSON瀛楃涓诧紝瀹屾暣寮€绁ㄦ暟鎹€傚繀濉? projectName,amount,invoiceType,proxyType銆傜郴缁熷瓧娈? projectId,taxPersonnel,salary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "鎻愪氦缁撴灉",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "application_id": {"type": "string", "description": "鐢宠鍗曞彿"},
+                    "mode": {"type": "string", "description": "鏂板/缂栬緫"},
+                    "status": {"type": "string"},
+                    "message": {"type": "string"},
+                    "submitted_summary": {"type": "object"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_check",
+        "summary": "鍋ュ悍妫€鏌?,
+        "description": "妫€鏌ユ湇鍔¤繍琛岀姸鎬?,
+        "responses": {
+          "200": {
+            "description": "鏈嶅姟姝ｅ父"
+          }
+        }
+      }
+    }
+  }
+}
